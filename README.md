@@ -6,6 +6,13 @@
 
 ## Test
 
+## Batch
+> * db (Once a day)
+
+## Background job - celery
+> * eamil - follwer's new aritcle ( when email is valid)
+> * 
+
 ## DB Tables
 ### Ingredents
 > * id
@@ -24,6 +31,8 @@
 > * desc_en
 > * cooking_time
 > * user_id
+> * thumbs_up
+> * views
 > * comment_id
 > * created_at
 > * updated_at
@@ -39,6 +48,7 @@
 ### User
 > * uid
 > * user_name
+> * email
 > * password
 > * profile_text
 > * profile_image_url
