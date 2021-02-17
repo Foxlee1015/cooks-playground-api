@@ -1,5 +1,16 @@
 from flask import Flask
-from apis import api
+from flask_restplus import Resource, Api
 
 app = Flask(__name__)
-api.init_app(app)
+api = Api(app)
+
+@api.route('/')
+class Home(Resource):
+    def get(self):
+        return {'hello': 'home'}
+
+
+@api.route('/hello')
+class HelloWorld(Resource):
+    def get(self):
+        return {'hello': 'world'}
