@@ -13,6 +13,13 @@ sessions = [
     }
 ]
 
+def delete_session(key):
+    # get from db
+    pass
+
+def create_session(user_id):
+    pass
+
 @api.route('/')
 class Sessions(Resource):
     @api.doc('list_sessions')
@@ -26,6 +33,22 @@ class Sessions(Resource):
 class Session(Resource):
     @api.doc('get_sessions')
     def get(self, id):
+        '''Fetch a session given its identifier'''
+        for session in sessions:
+            if sessions['id'] == id:
+                return sessions
+        api.abort(404)
+    
+    @api.doc('get_sessions')
+    def post(self, id):
+        '''Fetch a session given its identifier'''
+        for session in sessions:
+            if sessions['id'] == id:
+                return sessions
+        api.abort(404)
+
+    @api.doc('get_sessions')
+    def delete(self, id):
         '''Fetch a session given its identifier'''
         for session in sessions:
             if sessions['id'] == id:
