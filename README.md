@@ -14,7 +14,7 @@
 > * 
 
 ## DB Tables
-### Ingredents
+### Ingredients
 > * id
 > * image_urls
 > * name_kr
