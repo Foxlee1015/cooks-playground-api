@@ -1,15 +1,22 @@
+import os
 import traceback
-
-import pymysql
 from contextlib import contextmanager
 
+import pymysql
+from dotenv import load_dotenv
 
-db_host = "211.209.41.120"
-db_port = 16936
-db_user = "root"
-db_pw = "1234"
-db_dataset = 'cpg'
-db_charset = 'utf8'
+
+# load dotenv in the base root
+APP_ROOT = os.path.join(os.path.dirname(__file__), '..')   # refers to application_top
+dotenv_path = os.path.join(APP_ROOT, '.env')
+load_dotenv(dotenv_path)
+
+db_host = os.getenv('DB_HOST')
+db_port = int(os.getenv('DB_PORT'))
+db_user = os.getenv('DB_USERNAME')
+db_pw = os.getenv('DB_PASSWORD')
+db_dataset = os.getenv('DB_DATABASE')
+db_charset = os.getenv('DB_CHARSET')
 
 
 @contextmanager
