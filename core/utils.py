@@ -7,7 +7,7 @@ APP_ROOT = os.path.join(os.path.dirname(__file__), '..')   # refers to applicati
 dotenv_path = os.path.join(APP_ROOT, '.env')
 load_dotenv(dotenv_path)
 
-address = os.getenv('SSH_HOST')
+host = os.getenv('SSH_HOST')
 port = int(os.getenv('SSH_PORT'))
 usr = os.getenv('SSH_USER')
 pwd = os.getenv('SSH_PASSWORD')
@@ -62,8 +62,8 @@ def execute_command_ssh(cmd):
     # client.load_system_host_keys()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     try:
-        print(address, port, usr, pwd)
-        client.connect(address, port=port, username=usr, password=pwd)
+        client.connect(host, port, usr, pwd)
+        print('sssss')
     except paramiko.ssh_exception.SSHException: # tcp timeout
         traceback.print_exc()
         return None, None
@@ -73,5 +73,12 @@ def execute_command_ssh(cmd):
     _, stdout, stderr = client.exec_command(cmd)
     result_stdout, result_stderr = stdout.read(), stderr.read()
     client.close()
+
+    if result_stdout is None:
+        return None
+    else:
+        result_stdout = result_stdout.decode('utf-8')
+    if result_stderr is not None:
+        result_stderr = result_stderr.decode('utf-8')
 
     return result_stdout, result_stderr

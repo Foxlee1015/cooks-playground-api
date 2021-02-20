@@ -67,11 +67,13 @@ def init_db():
         conn.commit()
 
 def backup_db():
-    print('zzz')
     BACKUP_PATH = './var/backups'
     DATETIME = time.strftime('%Y%m%d_%H%M%S')
     TODAYBACKUPPATH = f"{BACKUP_PATH}/{DATETIME}"
     MYSQL_DB_DICRECTORY = f'./var/lib/mysql/{db_dataset}'
+
+    stdout, stderr = execute_command_ssh("docker ps")
+    print(stdout)
 
     # try:
     #     execute_command_ssh("docker exec -it cook_mysql sh")
