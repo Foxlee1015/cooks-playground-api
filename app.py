@@ -1,4 +1,5 @@
 from flask import Flask
+
 from apis import api
 from core.db import init_db, backup_db
 from core.errors import DbConnectError
