@@ -1,5 +1,8 @@
+import datetime
 import os
+import pipes
 import traceback
+import time
 from contextlib import contextmanager
 
 import pymysql
@@ -60,6 +63,49 @@ def init_db():
                 except:
                     traceback.print_exc()
         conn.commit()
+
+def backup_db():
+    print('zzz')
+    BACKUP_PATH = './data/dbbackup'
+    DATETIME = time.strftime('%Y%m%d_%H%M%S')
+    TODAYBACKUPPATH = BACKUP_PATH + '/' + DATETIME
+    try:
+        result = os.mkdir(TODAYBACKUPPATH)
+        if os.path.exists(db_dataset):
+            multi = 1
+            print("Databases file found...")
+            print("Starting backup of all dbs listed in file " + db_dataset)
+        else:
+            print("Databases file not found...")
+            print("Starting backup of database " + db_dataset)
+            multi = 0
+        if multi:
+            in_file = open(db_dataset,"r")
+            flength = len(in_file.readlines())
+            in_file.close()
+            p = 1
+            dbfile = open(db_dataset,"r")
+            while p <= flength:
+                db = dbfile.readline()   # reading database name from file
+                db = db[:-1]         # deletes extra line
+                dumpcmd = "mysqldump -h " + db_host + " -u " + db_user + " -p" + db_pw + " " + db + " > " + pipes.quote(TODAYBACKUPPATH) + "/" + db + ".sql"
+                os.system(dumpcmd)
+                gzipcmd = "gzip " + pipes.quote(TODAYBACKUPPATH) + "/" + db + ".sql"
+                os.system(gzipcmd)
+                p = p + 1
+            dbfile.close()
+        else:
+            db = db_dataset
+            dumpcmd = "mysqldump -h " + db_host + " -u " + db_user + " -p" + db_pw + " " + db + " > " + pipes.quote(TODAYBACKUPPATH) + "/" + db + ".sql"
+            os.system(dumpcmd)
+            gzipcmd = "gzip " + pipes.quote(TODAYBACKUPPATH) + "/" + db + ".sql"
+            os.system(gzipcmd)
+         
+        print("")
+        print("Backup script completed")
+        print("Your backups have been created in '" + TODAYBACKUPPATH + "' directory")
+    except:
+        print("db back error")
 
 
 def insert_user(user_name, email, user_type):
