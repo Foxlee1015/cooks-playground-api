@@ -13,9 +13,7 @@ class Users(CustomResource):
     @api.doc('list_users')
     def get(self):
         print('test')
-        '''List all users'''
-        backup_db()
-        
+        '''List all users'''        
         users = get_users()
         for user in users:
             user['create_datetime'] = json_serial(user['create_datetime'])
