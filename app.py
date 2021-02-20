@@ -1,3 +1,4 @@
+import time
 from flask import Flask
 
 from apis import api
@@ -10,12 +11,17 @@ def init_settings():
     except DbConnectError as e:
         print(e)
 
+# thread
+def background_task():
+    while True:
+        print("background_task")
+        backup_db()
 
 def create_app():
     app = Flask(__name__)
     api.init_app(app)
     init_settings()
 
-    backup_db()
+    # background_task()
 
     return app
