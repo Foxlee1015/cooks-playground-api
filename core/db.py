@@ -70,7 +70,12 @@ def backup_db():
     DATETIME = time.strftime('%Y%m%d_%H%M%S')
     TODAYBACKUPPATH = BACKUP_PATH + '/' + DATETIME
     try:
-        result = os.mkdir(TODAYBACKUPPATH)
+        print("ddd1")
+
+        try:
+            os.stat(TODAYBACKUPPATH)
+        except:
+            os.mkdir(TODAYBACKUPPATH)
         if os.path.exists(db_dataset):
             multi = 1
             print("Databases file found...")
@@ -79,6 +84,7 @@ def backup_db():
             print("Databases file not found...")
             print("Starting backup of database " + db_dataset)
             multi = 0
+        print("ddd2")
         if multi:
             in_file = open(db_dataset,"r")
             flength = len(in_file.readlines())
@@ -86,26 +92,27 @@ def backup_db():
             p = 1
             dbfile = open(db_dataset,"r")
             while p <= flength:
-                db = dbfile.readline()   # reading database name from file
-                db = db[:-1]         # deletes extra line
-                dumpcmd = "mysqldump -h " + db_host + " -u " + db_user + " -p" + db_pw + " " + db + " > " + pipes.quote(TODAYBACKUPPATH) + "/" + db + ".sql"
-                os.system(dumpcmd)
-                gzipcmd = "gzip " + pipes.quote(TODAYBACKUPPATH) + "/" + db + ".sql"
-                os.system(gzipcmd)
-                p = p + 1
-            dbfile.close()
+                db = dbfile.readline()
+                db = db[:-1]
+                os.system("docker exec -it cook_mysql sh")
+                dumpcmd = "mysqldump -h " + db_host + " -u " + db_user + " -p" + db_pw + " " + db + " > " + pipes.quote(TODAYBACKUPPATH) + "/" + db + ".sql"
+                os.system(dumpcmd)
+                gzipcmd = "gzip " + pipes.quote(TODAYBACKUPPATH) + "/" + db + ".sql"
+                os.system(gzipcmd)
+                p = p + 1
+            dbfile.close()
         else:
-            db = db_dataset
-            dumpcmd = "mysqldump -h " + db_host + " -u " + db_user + " -p" + db_pw + " " + db + " > " + pipes.quote(TODAYBACKUPPATH) + "/" + db + ".sql"
-            os.system(dumpcmd)
-            gzipcmd = "gzip " + pipes.quote(TODAYBACKUPPATH) + "/" + db + ".sql"
-            os.system(gzipcmd)
-         
-        print("")
+            db = db_dataset
+            os.system("docker exec -it cook_mysql sh")
+            dumpcmd = "mysqldump -h " + db_host + " -u " + db_user + " -p" + db_pw + " " + db + " > " + pipes.quote(TODAYBACKUPPATH) + "/" + db + ".sql"
+            os.system(dumpcmd)
+            gzipcmd = "gzip " + pipes.quote(TODAYBACKUPPATH) + "/" + db + ".sql"
+            os.system(gzipcmd)
         print("Backup script completed")
         print("Your backups have been created in '" + TODAYBACKUPPATH + "' directory")
-    except:
-        print("db back error")
+    except Exception as e:
+        traceback.print_exc()
+        print("db back error : ", e)
 
 
 def insert_user(user_name, email, user_type):
